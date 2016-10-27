@@ -4,7 +4,7 @@ angular.module('App.product', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {  
   $routeProvider.when('/', {
-    templateUrl: 'product.html',
+    templateUrl: './app/product.html',
     controller: 'ProductCtrl'
   });
 }])
