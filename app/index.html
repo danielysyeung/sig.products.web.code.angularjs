@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="App" class="no-js">
+
+<head>
+  <title>SIG Products Web UI</title>
+  <meta charset="UTF-8"></meta>
+  <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+  <link rel="stylesheet" href="styles.css"></link>
+  <base href="/"></base>
+</head>
+<!-- Display the application -->
+<body>
+  <div ng-view>Loading...</div>
+  <!-- Load libraries -->
+  <!-- Production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  -->
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="app.js"></script>
+  <script src="product.js"></script>
+</body>
+
+</html>
