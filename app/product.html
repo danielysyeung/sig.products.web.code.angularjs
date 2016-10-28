@@ -1,6 +1,6 @@
 <h2>SIG Products Web UI</h2>
 
-<div *ngIf="errorMessage">
+<div ng-if="errorMessage">
   <hr/>
   <h2>Error Message</h2>
   <div>{{errorMessage}}</div>
@@ -8,24 +8,24 @@
 
 <div>
   <hr/>
-  <h2>Add New Product <button (click)="add(s.value, n.value, d.value); s.value=''; n.value=''; d.value='';">Add</button></h2>
+  <h2>Add New Product <button ng-click="add(s.value, n.value, d.value); s.value=''; n.value=''; d.value='';">Add</button></h2>
 	<div><label>SKU: </label><input #s/></div>
 	<div><label>Name: </label><input #n/></div>
 	<div><label>Description: </label><input #d/></div>
 </div>
 
-<div *ngIf="product">
+<div ng-if="product">
 	<hr/>
-	<h2>Product Details <button (click)="update(product)">Update</button> <button (click)="delete(product)">Delete</button></h2>
+	<h2>Product Details <button ng-click="update(product)">Update</button> <button ng-click="delete(product)">Delete</button></h2>
 	<div><label>SKU: </label>{{product.sku}}</div>
-	<div><label>Name: </label><input [(ngModel)]="product.name" placeholder="name" /></div>
-	<div><label>Description: </label><input [(ngModel)]="product.description" placeholder="description" /></div>
+	<div><label>Name: </label><input type="text" ng-model="product.name" placeholder="name" /></div>
+	<div><label>Description: </label><input type="text" ng-model="product.description" placeholder="description" /></div>
 	<div><label>Updated: </label>{{product.lastUpdatedTimestamp}}</div>
 </div>
 
 <div>
   <hr/>
-	<h2>Product List <button (click)="refresh()">Refresh</button></h2>
+	<h2>Product List <button ng-click="refresh()">Refresh</button></h2>
 	<table class="table">
 		<thead>
 			<tr>
@@ -37,12 +37,12 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr *ngFor="let p of productList">
-				<td (click)="select(p)"><h3>{{p.sku}}</h3></td>
-				<td (click)="select(p)"><h3>{{p.name}}</h3></td>
-				<td (click)="select(p)"><h3>{{p.description}}</h3></td>
-				<td (click)="select(p)"><h3>{{p.lastUpdatedTimestamp}}</h3></td>
-				<td><button (click)="delete(p)">X</button></td>
+			<tr ng-repeat="p in productList">
+				<td ng-click="select(p)"><h3>{{p.sku}}</h3></td>
+				<td ng-click="select(p)"><h3>{{p.name}}</h3></td>
+				<td ng-click="select(p)"><h3>{{p.description}}</h3></td>
+				<td ng-click="select(p)"><h3>{{p.lastUpdatedTimestamp}}</h3></td>
+				<td><button ng-click="delete(p)">X</button></td>
 			</tr>
 		</tbody>
 	</table>
