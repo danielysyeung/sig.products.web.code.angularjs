@@ -1,10 +1,4 @@
-'use strict';
-
-// Declare app level module which depends on views and components
-angular.module('App', [
-  'ngRoute',
-  'App.product'
-])
+angular.module('App', ['ngRoute', 'Product'])
 
 .config(['$locationProvider', function($locationProvider) {
   $locationProvider.html5Mode(true);

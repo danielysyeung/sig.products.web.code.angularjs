@@ -1,6 +1,4 @@
-'use strict';
-
-angular.module('App.product', ['ngRoute'])
+angular.module('Product', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {  
   $routeProvider.when('/', {
@@ -9,86 +7,130 @@ angular.module('App.product', ['ngRoute'])
   });
 }])
 
-.controller('ProductCtrl', ['$scope', function($scope) {
-  $scope.productList = [
-    { 'sku': 'S10001', 'name': 'N10001', 'description': 'D10001', 'lastUpdatedTimestamp': '2016-10-17T01:30:00.050Z' },
-    { 'sku': 'S10002', 'name': 'N10002', 'description': 'D10002', 'lastUpdatedTimestamp': '2016-10-18T01:30:00.050Z' },
-    { 'sku': 'S10003', 'name': 'N10003', 'description': 'D10003', 'lastUpdatedTimestamp': '2016-10-19T01:30:00.050Z' }
-  ];
-  $scope.product = { 'sku': 'S10001', 'name': 'N10001', 'description': 'D10001', 'lastUpdatedTimestamp': '2016-10-17T01:30:00.050Z' };
-  $scope.errorMessage = 'Hello!';
-  $scope.aboutUi = { 'Name': 'ProductsUI', 'Version': '0.1', 'Framework': 'AngularJS' };
-  $scope.aboutService = { 'Name': 'ProductsService', 'Version': '0.1', 'Framework': 'Static' };
+.controller('ProductCtrl', ['$scope', '$http',  function($scope, $http) {
+
+  $scope.productsApiUrl = 'http://localhost:8081/products'; // URL to Products API (Nodejs)
+  $scope.productsApiAboutUrl = 'http://localhost:8081/products/service/about';  // URL to About Products API (Nodejs)
+
+  // $scope.productsApiUrl = 'http://localhost:8080/products'; // URL to Products API (Java)
+  // $scope.productsApiAboutUrl = 'http://localhost:8080/products/service/about';  // URL to About Products API (Java)
+
+  $scope.productList = null;
+  $scope.product = null;
+  $scope.selectedProduct = null;
+  $scope.errorMessage = null;
+  $scope.aboutUi = null;
+  $scope.aboutService = null;
+
+  $scope.init = function() {
+    $scope.errorMessage = null;
+    $scope.selectedProduct = null;
+    $scope.aboutProductsApi();
+    $scope.getAllProducts();
+  }
 
   // Internal functions
   
   $scope.getAllProducts = function() {
-    console.log('.getAllProducts()');
     // REST call
+    $http.get($scope.productsApiUrl)
+      .then(function(response) {
+        $scope.productList = response.data;
+      }, function(response) {        
+        $scope.handleError(response);
+      });
   }
   
   $scope.getOneProduct = function(sku) {
-    console.log('.getOneProduct()');
     // REST call
+    $http.get($scope.productsApiUrl + '/' + sku)
+      .then(function(response) {
+        $scope.productList = response.data;
+      }, function(response) {
+        $scope.handleError(response);
+      });
   }
 
   $scope.createOneProduct = function(product) {
-    console.log('.createOneProduct()');
     // REST call
+    var config = { headers: { 'Content-Type': 'application/json' } };
+    $http.post($scope.productsApiUrl, product, config)
+      .then(function(response) {   
+        $scope.getAllProducts();     
+      }, function(response) {
+        $scope.handleError(response);
+      });
   }
 
   $scope.updateOneProduct = function(sku, product) {
-    console.log('.updateOneProduct()');
     // REST call
+    var config = { headers: { 'Content-Type': 'application/json' } };
+    $http.put($scope.productsApiUrl + '/' + sku, product, config)
+      .then(function(response) {        
+        $scope.getAllProducts();
+      }, function(response) {
+        $scope.handleError(response);
+      });
   }
 
   $scope.deleteOneProduct = function(sku) {
-    console.log('.deleteOneProduct()');
     // REST call
+    $http.delete($scope.productsApiUrl + '/' + sku)
+      .then(function(response) {
+        $scope.getAllProducts();
+      }, function(response) {
+        $scope.handleError(response);
+      });
   }
 
   $scope.aboutProductsApi = function() {
-    this.aboutUi = '{"Name":"ProductsUI","Version":"0.1","Framework":"AngularJS"}';
-    console.log('.aboutProductsApi()');
+    $scope.aboutUi = '{"Name":"ProductsUI","Version":"0.1","Framework":"AngularJS"}';
     // REST call
+    $http.get($scope.productsApiAboutUrl)
+      .then(function(response) {
+        $scope.aboutService = JSON.stringify(response.data);
+      }, function(response) {
+        $scope.handleError(response);
+      });
   }
 
   // Functions for view
 
   $scope.select = function(p) {
-    console.log('.select()');
-    this.errorMessage = null;
-    this.product = p;
+    $scope.errorMessage = null;
+    $scope.selectedProduct = p;
   }
 
   $scope.refresh = function() {
-    console.log('.refresh()');
-    this.errorMessage = null;
-    this.product = null;
-    this.getAllProducts();
+    $scope.errorMessage = null;
+    $scope.selectedProduct = null;
+    $scope.getAllProducts();
   }
 
   $scope.add = function(sku, name, description) {
-    console.log('.add()');
-    this.errorMessage = null;
-    this.product = null;
-    this.createOneProduct({ 'sku': sku, 'name': name, 'description': description, 'lastUpdatedTimestamp': null });
+    $scope.errorMessage = null;
+    $scope.selectedProduct = null;
+    $scope.createOneProduct({ 'sku': sku, 'name': name, 'description': description, 'lastUpdatedTimestamp': null });
   }
 
   $scope.update = function(p) {
-    console.log('.update()');
-    this.errorMessage = null;
-    this.updateOneProduct(p.sku, p);
+    $scope.errorMessage = null;
+    $scope.updateOneProduct(p.sku, p);
   }
 
   $scope.delete = function(p) { 
-    console.log('.delete()');
-    this.errorMessage = null;
-    this.product = null;
-    this.deleteOneProduct(p.sku);
+    $scope.errorMessage = null;
+    $scope.selectedProduct = null;
+    $scope.deleteOneProduct(p.sku);
   }
 
+  $scope.handleError = function(response) {
+    $scope.errorMessage = response.status ? (response.status + ': ' + response.statusText) : 'Server Error';
+    console.error($scope.errorMessage);
+  }
 
+  $scope.init();
+  
 }]);
 
 
