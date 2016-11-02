@@ -9,12 +9,13 @@ angular.module('Product', ['ngRoute'])
 
 .controller('ProductCtrl', ['$scope', '$http',  function($scope, $http) {
 
-  $scope.productsApiUrl = 'http://localhost:8081/products'; // URL to Products API (Nodejs)
-  $scope.productsApiAboutUrl = 'http://localhost:8081/products/service/about';  // URL to About Products API (Nodejs)
+  $scope.productsApiUrlNodejs = 'http://localhost:8081/products'; // URL to Products API (Nodejs)
+  $scope.productsApiAboutUrlNodejs = 'http://localhost:8081/products/service/about';  // URL to About Products API (Nodejs)
 
-  // $scope.productsApiUrl = 'http://localhost:8080/products'; // URL to Products API (Java)
-  // $scope.productsApiAboutUrl = 'http://localhost:8080/products/service/about';  // URL to About Products API (Java)
+  $scope.productsApiUrlJava = 'http://localhost:8080/products'; // URL to Products API (Java)
+  $scope.productsApiAboutUrlJava= 'http://localhost:8080/products/service/about';  // URL to About Products API (Java)
 
+  $scope.serviceProvider = 'N';
   $scope.productList = null;
   $scope.product = null;
   $scope.selectedProduct = null;
@@ -24,6 +25,7 @@ angular.module('Product', ['ngRoute'])
 
   $scope.init = function() {
     $scope.errorMessage = null;
+    $scope.product = null;
     $scope.selectedProduct = null;
     $scope.aboutProductsApi();
     $scope.getAllProducts();
@@ -33,7 +35,7 @@ angular.module('Product', ['ngRoute'])
   
   $scope.getAllProducts = function() {
     // REST call
-    $http.get($scope.productsApiUrl)
+    $http.get($scope.getProductsApiUrl())
       .then(function(response) {
         $scope.productList = response.data;
       }, function(response) {        
@@ -43,7 +45,7 @@ angular.module('Product', ['ngRoute'])
   
   $scope.getOneProduct = function(sku) {
     // REST call
-    $http.get($scope.productsApiUrl + '/' + sku)
+    $http.get($scope.getProductsApiUrl() + '/' + sku)
       .then(function(response) {
         $scope.productList = response.data;
       }, function(response) {
@@ -54,7 +56,7 @@ angular.module('Product', ['ngRoute'])
   $scope.createOneProduct = function(product) {
     // REST call
     var config = { headers: { 'Content-Type': 'application/json' } };
-    $http.post($scope.productsApiUrl, product, config)
+    $http.post($scope.getProductsApiUrl(), product, config)
       .then(function(response) {   
         $scope.getAllProducts();     
       }, function(response) {
@@ -65,7 +67,7 @@ angular.module('Product', ['ngRoute'])
   $scope.updateOneProduct = function(sku, product) {
     // REST call
     var config = { headers: { 'Content-Type': 'application/json' } };
-    $http.put($scope.productsApiUrl + '/' + sku, product, config)
+    $http.put($scope.getProductsApiUrl() + '/' + sku, product, config)
       .then(function(response) {        
         $scope.getAllProducts();
       }, function(response) {
@@ -75,7 +77,7 @@ angular.module('Product', ['ngRoute'])
 
   $scope.deleteOneProduct = function(sku) {
     // REST call
-    $http.delete($scope.productsApiUrl + '/' + sku)
+    $http.delete($scope.getProductsApiUrl() + '/' + sku)
       .then(function(response) {
         $scope.getAllProducts();
       }, function(response) {
@@ -86,7 +88,7 @@ angular.module('Product', ['ngRoute'])
   $scope.aboutProductsApi = function() {
     $scope.aboutUi = '{"Name":"ProductsUI","Version":"0.1","Framework":"AngularJS"}';
     // REST call
-    $http.get($scope.productsApiAboutUrl)
+    $http.get($scope.getProductsApiAboutUrl())
       .then(function(response) {
         $scope.aboutService = JSON.stringify(response.data);
       }, function(response) {
@@ -127,6 +129,28 @@ angular.module('Product', ['ngRoute'])
   $scope.handleError = function(response) {
     $scope.errorMessage = response.status ? (response.status + ': ' + response.statusText) : 'Server Error';
     console.error($scope.errorMessage);
+  }
+
+  $scope.setServiceProvider = function() {
+    $scope.init();
+  }
+
+  $scope.getProductsApiUrl = function() {
+    if ($scope.serviceProvider == 'J') {
+      return $scope.productsApiUrlJava;
+    } 
+
+    // Default serviceProvider is Node.js.
+    return $scope.productsApiUrlNodejs;
+  }
+
+  $scope.getProductsApiAboutUrl = function() {
+    if ($scope.serviceProvider == 'J') {
+      return $scope.productsApiAboutUrlJava;
+    } 
+
+    // Default serviceProvider is Node.js.
+    return $scope.productsApiAboutUrlNodejs;
   }
 
   $scope.init();

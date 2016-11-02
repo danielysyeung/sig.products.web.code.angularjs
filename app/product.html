@@ -1,6 +1,14 @@
 <h2>SIG Products Web UI</h2>
 
-<div ng-controller="ProductCtrl">
+<div>
+	<div>UI Framework: {{aboutUi}}</div>
+	<div>Service Provider: {{aboutService}}</div>
+	<label>Select Service Provider: </label>
+	<select name="serviceProvider" ng-model="serviceProvider" ng-change="setServiceProvider();">
+    <option value="N">Node.js</option>
+    <option value="J">Java</option>
+  </select>
+</div>
 
 <div ng-if="errorMessage">
   <hr/>
@@ -8,22 +16,35 @@
   <div>{{errorMessage}}</div>
 </div>
 
+<hr/>
+<table>
+	<tr>
+		<td>
+
 <div>
-  <hr/>
   <h2>Add New Product <button ng-click="add(product.sku, product.name, product.description); product.sku=''; product.name=''; product.description='';">Add</button></h2>
 	<div><label>SKU: </label><input type="text" ng-model="product.sku"/></div>
 	<div><label>Name: </label><input type="text" ng-model="product.name"/></div>
 	<div><label>Description: </label><input type="text" ng-model="product.description"/></div>
+	<div><label>Updated Timestamp: </label>system generated</div>
 </div>
 
+    </td>
+		<td>
+		</td>
+		<td>
+
 <div ng-if="selectedProduct">
-	<hr/>
 	<h2>Product Details <button ng-click="update(selectedProduct)">Update</button> <button ng-click="delete(selectedProduct)">Delete</button></h2>
 	<div><label>SKU: </label>{{selectedProduct.sku}}</div>
 	<div><label>Name: </label><input type="text" ng-model="selectedProduct.name" placeholder="name" /></div>
 	<div><label>Description: </label><input type="text" ng-model="selectedProduct.description" placeholder="description" /></div>
-	<div><label>Updated: </label>{{selectedProduct.lastUpdatedTimestamp}}</div>
+	<div><label>Updated Timestamp: </label>{{selectedProduct.lastUpdatedTimestamp}}</div>
 </div>
+
+    </td>
+	</tr>
+</table>
 
 <div>
   <hr/>
@@ -34,7 +55,7 @@
 				<th><h3>SKU</h3></th>
 				<th><h3>Name</h3></th>
 				<th><h3>Description</h3></th>
-				<th><h3>UpdatedAt</h3></th>
+				<th><h3>Updated Timestamp</h3></th>
 				<th></th>
 			</tr>
 		</thead>
@@ -48,13 +69,4 @@
 			</tr>
 		</tbody>
 	</table>
-</div>
-
-<div>
-  <hr/>
-	<h2>About</h2>
-	<div>UI: {{aboutUi}}</div>
-	<div>Service: {{aboutService}}</div>
-</div>
-
 </div>
