@@ -105,6 +105,7 @@ angular.module('Product', ['ngRoute'])
 
   $scope.refresh = function() {
     $scope.errorMessage = null;
+    $scope.product = null;
     $scope.selectedProduct = null;
     $scope.getAllProducts();
   }

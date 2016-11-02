@@ -23,9 +23,9 @@
 
 <div>
   <h2>Add New Product <button ng-click="add(product.sku, product.name, product.description); product.sku=''; product.name=''; product.description='';">Add</button></h2>
-	<div><label>SKU: </label><input type="text" ng-model="product.sku"/></div>
-	<div><label>Name: </label><input type="text" ng-model="product.name"/></div>
-	<div><label>Description: </label><input type="text" ng-model="product.description"/></div>
+	<div><label>SKU: </label><input type="text" ng-model="product.sku" placeholder="sku"/></div>
+	<div><label>Name: </label><input type="text" ng-model="product.name" placeholder="name"/></div>
+	<div><label>Description: </label><input type="text" ng-model="product.description" placeholder="description"/></div>
 	<div><label>Updated Timestamp: </label>system generated</div>
 </div>
 
